@@ -25,32 +25,21 @@
 package io.github.artemget;
 
 /**
- * Integer property entry.
- *
+ * Integer entry.
  * @since 0.0.1
  */
-public final class EPropInt implements Entry<Integer> {
+public final class EInt implements Entry<Integer> {
     /**
      * Origin entry.
      */
     private final Entry<String> origin;
 
     /**
-     * Ctor.
-     *
-     * @param name Property
-     */
-    public EPropInt(final String name) {
-        this(new EProp(name));
-    }
-
-    /**
      * Main Ctor.
-     *
      * @param origin Property
      */
-    public EPropInt(final Entry<String> origin) {
-        this.origin = origin;
+    public EInt(final Entry<String> origin) {
+        this.origin = new ESafe<>(origin);
     }
 
     @Override
