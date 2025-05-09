@@ -22,17 +22,7 @@
  * SOFTWARE.
  */
 
-package io.github.artemget;
-
-import org.cactoos.Scalar;
-
 /**
- * Application's entry.
- *
- * @param <T> Value type
- * @since 0.0.1
+ * Json entries directory.
  */
-public interface Entry<T> extends Scalar<T> {
-    @Override
-    T value() throws EntryException;
-}
+package io.github.artemget.json;

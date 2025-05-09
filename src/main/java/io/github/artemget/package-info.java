@@ -23,6 +23,6 @@
  */
 
 /**
- * Entry directory.
+ * Entry root directory.
  */
 package io.github.artemget;

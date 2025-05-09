@@ -22,31 +22,7 @@
  * SOFTWARE.
  */
 
-package io.github.artemget;
-
 /**
- * Fake inmemory entry.
- *
- * @param <T> Value type
- * @since 0.0.1
+ * Fake entries directory.
  */
-public final class EFake<T> implements Entry<T> {
-    /**
-     * Entry value.
-     */
-    private final T val;
-
-    /**
-     * Main Ctor.
-     *
-     * @param val Entry value
-     */
-    public EFake(final T val) {
-        this.val = val;
-    }
-
-    @Override
-    public T value() {
-        return this.val;
-    }
-}
+package io.github.artemget.fake;

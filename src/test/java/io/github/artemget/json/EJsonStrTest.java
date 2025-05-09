@@ -22,33 +22,34 @@
  * SOFTWARE.
  */
 
-package io.github.artemget;
+package io.github.artemget.json;
 
+import io.github.artemget.EntryException;
 import javax.json.Json;
-import javax.json.JsonObject;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test cases for {@link EJsonObj}.
+ * Test cases for {@link io.github.artemget.json.EJsonStr}.
  *
  * @since 0.0.1
  */
-final class EJsonObjTest {
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+final class EJsonStrTest {
 
     @Test
     void throwsAtWrongAttrType() {
         Assertions.assertThrows(
             EntryException.class,
-            () -> new EJsonObj(
+            () -> new EJsonStr(
                 Json.createObjectBuilder()
-                    .add("name", "not json object")
+                    .add("name", 123)
                     .build(),
                 "name"
             ).value(),
-            "EJsonObj did not rethrow at wrong field type"
+            "EJsonStr did not rethrow at wrong field type"
         );
     }
 
@@ -56,30 +57,25 @@ final class EJsonObjTest {
     void throwsAtNullValue() {
         Assertions.assertThrows(
             EntryException.class,
-            () -> new EJsonObj(
+            () -> new EJsonStr(
                 Json.createObjectBuilder().build(),
                 "name"
             ).value(),
-            "EJsonObj did not rethrow at null"
+            "EJsonStr did not rethrow at null"
         );
     }
 
     @Test
-    void returnsObject() throws EntryException {
-        final JsonObject object = Json.createObjectBuilder()
-            .add(
-                "user",
-                Json.createObjectBuilder()
-                    .add("name", "zarif")
-                    .build()
-            ).build();
+    void returnsValue() throws EntryException {
         MatcherAssert.assertThat(
-            "EJsonObj did not return expected value",
-            new EJsonObj(
-                object,
-                "user"
+            "EJsonStr did not return expected value",
+            new EJsonStr(
+                Json.createObjectBuilder()
+                    .add("name", "123")
+                    .build(),
+                "name"
             ).value(),
-            Matchers.equalTo(object.getJsonObject("user"))
+            Matchers.equalTo("123")
         );
     }
 }

@@ -22,73 +22,52 @@
  * SOFTWARE.
  */
 
-package io.github.artemget;
+package io.github.artemget.json;
 
-import javax.json.JsonArray;
+import io.github.artemget.ESafe;
+import io.github.artemget.Entry;
+import io.github.artemget.EntryException;
 import javax.json.JsonObject;
 import org.cactoos.Scalar;
 
 /**
- * Eject {@link JsonArray} from provided json. Null safe.
+ * Eject {@link JsonObject} from provided json. Null safe.
  *
  * @since 0.0.1
  */
-public final class EJsonArr implements Entry<JsonArray> {
-    /**
-     * Scalar returning {@link JsonArray}.
-     */
-    private final Scalar<JsonArray> json;
+public final class EJsonObj extends ESafe<JsonObject> {
 
     /**
-     * Default ctor. Get {@link JsonArray} by it's attribute name.
+     * Default ctor. Get {@link JsonObject} by it's attribute name.
      * Wraps provided json in {@link Scalar}.
      *
      * @param json Object
      * @param attr To lookup
      */
-    public EJsonArr(final JsonObject json, final String attr) {
+    public EJsonObj(final JsonObject json, final String attr) {
         this(() -> json, attr);
     }
 
     /**
-     * Get {@link JsonArray} by it's attribute name
+     * Get {@link JsonObject} by it's attribute name
      * from json provided by {@link Scalar}.
      *
      * @param json Scalar source json
      * @param attr To lookup
      */
-    public EJsonArr(final Scalar<JsonObject> json, final String attr) {
-        this(
+    public EJsonObj(final Entry<JsonObject> json, final String attr) {
+        super(
             () -> {
                 try {
-                    return json.value().getJsonArray(attr);
+                    return json.value().getJsonObject(attr);
                 } catch (final ClassCastException exception) {
                     throw new EntryException(
-                        String.format("Attribute %s couldn't be mapped to JsonArray", attr),
+                        String.format("Attribute %s couldn't be mapped to JsonObject", attr),
                         exception
                     );
                 }
-            }
+            },
+            () -> String.format("JsonObject attribute '%s' is null", attr)
         );
-    }
-
-    /**
-     * Main ctor.
-     *
-     * @param json Array
-     */
-    public EJsonArr(final Scalar<JsonArray> json) {
-        this.json = () -> new ESafe<>(json).value();
-    }
-
-    //@checkstyle IllegalCatchCheck (7 lines)
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
-    @Override
-    public JsonArray value() throws EntryException {
-        try {
-            return this.json.value();
-        } catch (final Exception exception) {
-            throw new EntryException(exception);
-        }
     }
 }

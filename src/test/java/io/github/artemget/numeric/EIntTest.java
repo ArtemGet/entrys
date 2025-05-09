@@ -22,59 +22,35 @@
  * SOFTWARE.
  */
 
-package io.github.artemget;
+package io.github.artemget.numeric;
 
-import javax.json.Json;
+import io.github.artemget.EntryException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test cases for {@link EJsonStr}.
- *
- * @since 0.0.1
+ * Test cases for {@link io.github.artemget.numeric.EInt}.
+ * @since 0.2.0
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
-final class EJsonStrTest {
+final class EIntTest {
 
     @Test
-    void throwsAtWrongAttrType() {
-        Assertions.assertThrows(
-            EntryException.class,
-            () -> new EJsonStr(
-                Json.createObjectBuilder()
-                    .add("name", 123)
-                    .build(),
-                "name"
-            ).value(),
-            "EJsonStr did not rethrow at wrong field type"
-        );
-    }
-
-    @Test
-    void throwsAtNullValue() {
-        Assertions.assertThrows(
-            EntryException.class,
-            () -> new EJsonStr(
-                Json.createObjectBuilder().build(),
-                "name"
-            ).value(),
-            "EJsonStr did not rethrow at null"
-        );
-    }
-
-    @Test
-    void returnsValue() throws EntryException {
+    void returnsWhenInt() throws EntryException {
         MatcherAssert.assertThat(
-            "EJsonStr did not return expected value",
-            new EJsonStr(
-                Json.createObjectBuilder()
-                    .add("name", "123")
-                    .build(),
-                "name"
-            ).value(),
-            Matchers.equalTo("123")
+            "Property int could not parse int value",
+            new EInt(() -> String.format("%s", Integer.MAX_VALUE)).value(),
+            Matchers.equalTo(Integer.MAX_VALUE)
+        );
+    }
+
+    @Test
+    void throwsAtLong() throws EntryException {
+        Assertions.assertThrows(
+            EntryException.class,
+            () -> new EInt(() -> String.format("%s", Long.MIN_VALUE)).value(),
+            "Property int parsed long value"
         );
     }
 }

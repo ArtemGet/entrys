@@ -22,17 +22,36 @@
  * SOFTWARE.
  */
 
-package io.github.artemget;
+package io.github.artemget.numeric;
+
+import io.github.artemget.ESafe;
+import io.github.artemget.Entry;
+import io.github.artemget.EntryException;
 
 /**
- * Fake entry. Always throws.
- *
- * @param <T> Value type
- * @since 0.0.1
+ * Integer entry.
+ * @since 0.2.0
  */
-public final class EFakeErr<T> implements Entry<T> {
+public final class EInt implements Entry<Integer> {
+    /**
+     * Origin entry.
+     */
+    private final Entry<String> origin;
+
+    /**
+     * Main Ctor.
+     * @param origin Property
+     */
+    public EInt(final Entry<String> origin) {
+        this.origin = new ESafe<>(origin);
+    }
+
     @Override
-    public T value() throws EntryException {
-        throw new EntryException("Fake error");
+    public Integer value() throws EntryException {
+        try {
+            return Integer.valueOf(this.origin.value());
+        } catch (final NumberFormatException exception) {
+            throw new EntryException("Wrong entry type for int entry", exception);
+        }
     }
 }

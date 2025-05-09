@@ -24,6 +24,9 @@
 
 package io.github.artemget;
 
+import io.github.artemget.fake.EFake;
+import io.github.artemget.fake.EFakeErr;
+import java.util.function.Supplier;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -31,7 +34,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for {@link ESafe}.
- *
  * @since 0.0.1
  */
 final class ESafeTest {
@@ -41,9 +43,7 @@ final class ESafeTest {
         Assertions.assertThrows(
             EntryException.class,
             () -> new ESafe<>(
-                () -> {
-                    throw new EntryException("error");
-                }
+                new EFakeErr<>()
             ).value(),
             "Safe entry did not rethrow scalar exception"
         );
@@ -62,8 +62,46 @@ final class ESafeTest {
     void returnsScalarValue() throws EntryException {
         MatcherAssert.assertThat(
             "Safe entry did not return suggested value",
-            new ESafe<>(() -> "value").value(),
+            new ESafe<>(new EFake<>("value")).value(),
             Matchers.equalTo("value")
+        );
+    }
+
+    @Test
+    void throwsDefaultWhenNullAndDefaultMessage() {
+        final Supplier<String> err = () -> {
+            String message;
+            try {
+                new ESafe<>(() -> null).value();
+                message = "";
+            } catch (final EntryException exception) {
+                message = exception.getMessage();
+            }
+            return message;
+        };
+        MatcherAssert.assertThat(
+            "Error message is not default at default message set",
+            err.get(),
+            Matchers.equalTo("Empty entry")
+        );
+    }
+
+    @Test
+    void throwsNotDefaultWhenNullAndCustomMessage() {
+        final Supplier<String> err = () -> {
+            String message;
+            try {
+                new ESafe<>(() -> null, () -> "Custom NPE message").value();
+                message = "";
+            } catch (final EntryException exception) {
+                message = exception.getMessage();
+            }
+            return message;
+        };
+        MatcherAssert.assertThat(
+            "Error message is not default at default message set",
+            err.get(),
+            Matchers.equalTo("Custom NPE message")
         );
     }
 }

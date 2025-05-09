@@ -22,17 +22,20 @@
  * SOFTWARE.
  */
 
-package io.github.artemget;
+package io.github.artemget.fake;
 
-import org.cactoos.Scalar;
+import io.github.artemget.Entry;
+import io.github.artemget.EntryException;
 
 /**
- * Application's entry.
+ * Fake entry. Always throws.
  *
  * @param <T> Value type
  * @since 0.0.1
  */
-public interface Entry<T> extends Scalar<T> {
+public final class EFakeErr<T> implements Entry<T> {
     @Override
-    T value() throws EntryException;
+    public T value() throws EntryException {
+        throw new EntryException("Fake error");
+    }
 }

@@ -22,43 +22,7 @@
  * SOFTWARE.
  */
 
-package io.github.artemget;
-
 /**
- * Integer property entry.
- *
- * @since 0.0.1
+ * Numeric entries directory.
  */
-public final class EPropInt implements Entry<Integer> {
-    /**
-     * Origin entry.
-     */
-    private final Entry<String> origin;
-
-    /**
-     * Ctor.
-     *
-     * @param name Property
-     */
-    public EPropInt(final String name) {
-        this(new EProp(name));
-    }
-
-    /**
-     * Main Ctor.
-     *
-     * @param origin Property
-     */
-    public EPropInt(final Entry<String> origin) {
-        this.origin = origin;
-    }
-
-    @Override
-    public Integer value() throws EntryException {
-        try {
-            return Integer.valueOf(this.origin.value());
-        } catch (final NumberFormatException exception) {
-            throw new EntryException("Wrong entry type for int entry", exception);
-        }
-    }
-}
+package io.github.artemget.numeric;
