@@ -24,51 +24,53 @@
 
 package io.github.artemget;
 
-import org.cactoos.Scalar;
-
 /**
  * Null safe entry. Throws if wrapped
  * scalar return null.
- *
  * @param <T> Type
  * @since 0.0.1
+ * @checkstyle DesignForExtensionCheck (70 lines)
  */
-public final class ESafe<T> implements Entry<T> {
+public class ESafe<T> implements Entry<T> {
     /**
      * Scalar returning T.
      */
-    private final Scalar<T> origin;
+    private final Entry<T> origin;
 
     /**
-     * Ctor.
-     *
-     * @param origin Value
+     * Scalar returning error message if origin returned null or thrown NPE.
      */
-    public ESafe(final T origin) {
-        this(() -> origin);
+    private final Entry<String> message;
+
+    /**
+     * Main ctor.
+     * @param origin Scalar
+     */
+    public ESafe(final Entry<T> origin) {
+        this(origin, () -> "Empty entry");
     }
 
     /**
      * Main ctor.
-     *
      * @param origin Scalar
+     * @param message Thrown if null
      */
-    public ESafe(final Scalar<T> origin) {
+    public ESafe(final Entry<T> origin, final Entry<String> message) {
         this.origin = origin;
+        this.message = message;
     }
 
-    //@checkstyle IllegalCatchCheck (8 lines)
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
+    @SuppressWarnings({"PMD.AvoidCatchingNPE", "PMD.AvoidCatchingGenericException"})
     @Override
     public T value() throws EntryException {
         final T value;
         try {
             value = this.origin.value();
-        } catch (final Exception exception) {
-            throw new EntryException(exception);
+        } catch (final NullPointerException exception) {
+            throw new EntryException(this.message.value(), exception);
         }
         if (value == null) {
-            throw new EntryException("Empty entry");
+            throw new EntryException(this.message.value());
         }
         return value;
     }
