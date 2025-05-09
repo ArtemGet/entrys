@@ -1,6 +1,7 @@
 [![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
 
 [![Build](https://github.com/ArtemGet/entrys/actions/workflows/maven.yaml/badge.svg)](https://github.com/ArtemGet/entrys/actions/workflows/maven.yaml)
+[![](https://jitpack.io/v/ArtemGet/entrys.svg)](https://jitpack.io/#ArtemGet/entrys)
 
 # Overview
 
