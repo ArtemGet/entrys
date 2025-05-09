@@ -32,11 +32,7 @@ import org.cactoos.Scalar;
  *
  * @since 0.0.1
  */
-public final class EJsonObj implements Entry<JsonObject> {
-    /**
-     * Scalar returning {@link JsonObject}.
-     */
-    private final Scalar<JsonObject> json;
+public final class EJsonObj extends ESafe<JsonObject> {
 
     /**
      * Default ctor. Get {@link JsonObject} by it's attribute name.
@@ -56,8 +52,8 @@ public final class EJsonObj implements Entry<JsonObject> {
      * @param json Scalar source json
      * @param attr To lookup
      */
-    public EJsonObj(final Scalar<JsonObject> json, final String attr) {
-        this(
+    public EJsonObj(final Entry<JsonObject> json, final String attr) {
+        super(
             () -> {
                 try {
                     return json.value().getJsonObject(attr);
@@ -67,28 +63,8 @@ public final class EJsonObj implements Entry<JsonObject> {
                         exception
                     );
                 }
-            }
+            },
+            () -> String.format("JsonObject attribute '%s' is null", attr)
         );
-    }
-
-    /**
-     * Main ctor. Get {@link JsonObject} by
-     * yourself.
-     *
-     * @param json Scalar
-     */
-    public EJsonObj(final Scalar<JsonObject> json) {
-        this.json = () -> new ESafe<>(json).value();
-    }
-
-    //@checkstyle IllegalCatchCheck (7 lines)
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
-    @Override
-    public JsonObject value() throws EntryException {
-        try {
-            return this.json.value();
-        } catch (final Exception exception) {
-            throw new EntryException(exception);
-        }
     }
 }
