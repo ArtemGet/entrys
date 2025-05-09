@@ -22,8 +22,11 @@
  * SOFTWARE.
  */
 
-package io.github.artemget;
+package io.github.artemget.json;
 
+import io.github.artemget.ESafe;
+import io.github.artemget.Entry;
+import io.github.artemget.EntryException;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import org.cactoos.Scalar;

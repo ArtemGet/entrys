@@ -22,45 +22,52 @@
  * SOFTWARE.
  */
 
-package io.github.artemget;
+package io.github.artemget.json;
 
+import io.github.artemget.ESafe;
+import io.github.artemget.Entry;
+import io.github.artemget.EntryException;
 import javax.json.JsonObject;
 import org.cactoos.Scalar;
 
 /**
- * Eject {@link String} value from provided json. Null safe.
+ * Eject {@link JsonObject} from provided json. Null safe.
+ *
  * @since 0.0.1
  */
-public final class EJsonStr extends ESafe<String> {
+public final class EJsonObj extends ESafe<JsonObject> {
 
     /**
-     * Default ctor. Get {@link String} by it's attribute name.
+     * Default ctor. Get {@link JsonObject} by it's attribute name.
      * Wraps provided json in {@link Scalar}.
+     *
      * @param json Object
      * @param attr To lookup
      */
-    public EJsonStr(final JsonObject json, final String attr) {
+    public EJsonObj(final JsonObject json, final String attr) {
         this(() -> json, attr);
     }
 
     /**
-     * Get {@link String} by it's attribute name.
+     * Get {@link JsonObject} by it's attribute name
+     * from json provided by {@link Scalar}.
+     *
      * @param json Scalar source json
      * @param attr To lookup
      */
-    public EJsonStr(final Entry<JsonObject> json, final String attr) {
+    public EJsonObj(final Entry<JsonObject> json, final String attr) {
         super(
             () -> {
                 try {
-                    return json.value().getString(attr);
+                    return json.value().getJsonObject(attr);
                 } catch (final ClassCastException exception) {
                     throw new EntryException(
-                        String.format("Attribute %s couldn't be mapped to String", attr),
+                        String.format("Attribute %s couldn't be mapped to JsonObject", attr),
                         exception
                     );
                 }
             },
-            () -> String.format("String attribute '%s' is null", attr)
+            () -> String.format("JsonObject attribute '%s' is null", attr)
         );
     }
 }

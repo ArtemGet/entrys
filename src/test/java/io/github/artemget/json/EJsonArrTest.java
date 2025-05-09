@@ -22,8 +22,9 @@
  * SOFTWARE.
  */
 
-package io.github.artemget;
+package io.github.artemget.json;
 
+import io.github.artemget.EntryException;
 import javax.json.Json;
 import javax.json.JsonObject;
 import org.hamcrest.MatcherAssert;
@@ -32,7 +33,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test cases for {@link EJsonArr}.
+ * Test cases for {@link io.github.artemget.json.EJsonArr}.
  *
  * @since 0.0.1
  */

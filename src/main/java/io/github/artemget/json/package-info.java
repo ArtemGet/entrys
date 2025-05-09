@@ -22,34 +22,7 @@
  * SOFTWARE.
  */
 
-package io.github.artemget;
-
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 /**
- * Test cases for {@link io.github.artemget.EInt}.
- * @since 0.2.0
+ * Json entries directory.
  */
-class EIntTest {
-
-    @Test
-    void returnsWhenInt() throws EntryException {
-        MatcherAssert.assertThat(
-            "Property int could not parse int value",
-            new EInt(() -> String.format("%s", Integer.MAX_VALUE)).value(),
-            Matchers.equalTo(Integer.MAX_VALUE)
-        );
-    }
-
-    @Test
-    void throwsAtLong() throws EntryException {
-        Assertions.assertThrows(
-            EntryException.class,
-            () -> new EInt(() -> String.format("%s", Long.MIN_VALUE)).value(),
-            "Property int parsed long value"
-        );
-    }
-}
+package io.github.artemget.json;

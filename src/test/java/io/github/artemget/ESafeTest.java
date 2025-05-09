@@ -24,6 +24,8 @@
 
 package io.github.artemget;
 
+import io.github.artemget.fake.EFake;
+import io.github.artemget.fake.EFakeErr;
 import java.util.function.Supplier;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -67,12 +69,12 @@ final class ESafeTest {
 
     @Test
     void throwsDefaultWhenNullAndDefaultMessage() {
-        Supplier<String> err = () -> {
+        final Supplier<String> err = () -> {
             String message;
             try {
                 new ESafe<>(() -> null).value();
                 message = "";
-            } catch (EntryException exception) {
+            } catch (final EntryException exception) {
                 message = exception.getMessage();
             }
             return message;
@@ -86,12 +88,12 @@ final class ESafeTest {
 
     @Test
     void throwsNotDefaultWhenNullAndCustomMessage() {
-        Supplier<String> err = () -> {
+        final Supplier<String> err = () -> {
             String message;
             try {
                 new ESafe<>(() -> null, () -> "Custom NPE message").value();
                 message = "";
-            } catch (EntryException exception) {
+            } catch (final EntryException exception) {
                 message = exception.getMessage();
             }
             return message;
