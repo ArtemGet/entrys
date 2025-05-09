@@ -29,20 +29,14 @@ import javax.json.JsonObject;
 import org.cactoos.Scalar;
 
 /**
- * Eject {@link JsonArray} from provided json. Null safe.
- *
+ * Eject {@link JsonArray} from provided json.
  * @since 0.0.1
  */
-public final class EJsonArr implements Entry<JsonArray> {
-    /**
-     * Scalar returning {@link JsonArray}.
-     */
-    private final Scalar<JsonArray> json;
+public final class EJsonArr extends ESafe<JsonArray> {
 
     /**
      * Default ctor. Get {@link JsonArray} by it's attribute name.
      * Wraps provided json in {@link Scalar}.
-     *
      * @param json Object
      * @param attr To lookup
      */
@@ -53,12 +47,11 @@ public final class EJsonArr implements Entry<JsonArray> {
     /**
      * Get {@link JsonArray} by it's attribute name
      * from json provided by {@link Scalar}.
-     *
      * @param json Scalar source json
      * @param attr To lookup
      */
-    public EJsonArr(final Scalar<JsonObject> json, final String attr) {
-        this(
+    public EJsonArr(final Entry<JsonObject> json, final String attr) {
+        super(
             () -> {
                 try {
                     return json.value().getJsonArray(attr);
@@ -68,27 +61,8 @@ public final class EJsonArr implements Entry<JsonArray> {
                         exception
                     );
                 }
-            }
+            },
+            () -> String.format("JsonArray attribute '%s' is null", attr)
         );
-    }
-
-    /**
-     * Main ctor.
-     *
-     * @param json Array
-     */
-    public EJsonArr(final Scalar<JsonArray> json) {
-        this.json = () -> new ESafe<>(json).value();
-    }
-
-    //@checkstyle IllegalCatchCheck (7 lines)
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
-    @Override
-    public JsonArray value() throws EntryException {
-        try {
-            return this.json.value();
-        } catch (final Exception exception) {
-            throw new EntryException(exception);
-        }
     }
 }
