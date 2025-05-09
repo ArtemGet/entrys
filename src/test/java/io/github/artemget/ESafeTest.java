@@ -24,6 +24,7 @@
 
 package io.github.artemget;
 
+import java.util.function.Supplier;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -31,7 +32,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for {@link ESafe}.
- *
  * @since 0.0.1
  */
 final class ESafeTest {
@@ -62,6 +62,44 @@ final class ESafeTest {
             "Safe entry did not return suggested value",
             new ESafe<>(new EFake<>("value")).value(),
             Matchers.equalTo("value")
+        );
+    }
+
+    @Test
+    void throwsDefaultWhenNullAndDefaultMessage() {
+        Supplier<String> err = () -> {
+            String message;
+            try {
+                new ESafe<>(() -> null).value();
+                message = "";
+            } catch (EntryException exception) {
+                message = exception.getMessage();
+            }
+            return message;
+        };
+        MatcherAssert.assertThat(
+            "Error message is not default at default message set",
+            err.get(),
+            Matchers.equalTo("Empty entry")
+        );
+    }
+
+    @Test
+    void throwsNotDefaultWhenNullAndCustomMessage() {
+        Supplier<String> err = () -> {
+            String message;
+            try {
+                new ESafe<>(() -> null, () -> "Custom NPE message").value();
+                message = "";
+            } catch (EntryException exception) {
+                message = exception.getMessage();
+            }
+            return message;
+        };
+        MatcherAssert.assertThat(
+            "Error message is not default at default message set",
+            err.get(),
+            Matchers.equalTo("Custom NPE message")
         );
     }
 }
