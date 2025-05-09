@@ -29,19 +29,13 @@ import org.cactoos.Scalar;
 
 /**
  * Eject {@link String} value from provided json. Null safe.
- *
  * @since 0.0.1
  */
-public final class EJsonStr implements Entry<String> {
-    /**
-     * Scalar returning {@link String}.
-     */
-    private final Scalar<String> json;
+public final class EJsonStr extends ESafe<String> {
 
     /**
      * Default ctor. Get {@link String} by it's attribute name.
      * Wraps provided json in {@link Scalar}.
-     *
      * @param json Object
      * @param attr To lookup
      */
@@ -51,12 +45,11 @@ public final class EJsonStr implements Entry<String> {
 
     /**
      * Get {@link String} by it's attribute name.
-     *
      * @param json Scalar source json
      * @param attr To lookup
      */
-    public EJsonStr(final Scalar<JsonObject> json, final String attr) {
-        this(
+    public EJsonStr(final Entry<JsonObject> json, final String attr) {
+        super(
             () -> {
                 try {
                     return json.value().getString(attr);
@@ -66,27 +59,8 @@ public final class EJsonStr implements Entry<String> {
                         exception
                     );
                 }
-            }
+            },
+            () -> String.format("String attribute '%s' is null", attr)
         );
-    }
-
-    /**
-     * Main Ctor. Implement by yourself.
-     *
-     * @param json Scalar
-     */
-    public EJsonStr(final Scalar<String> json) {
-        this.json = () -> new ESafe<>(json).value();
-    }
-
-    //@checkstyle IllegalCatchCheck (7 lines)
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
-    @Override
-    public String value() throws EntryException {
-        try {
-            return this.json.value();
-        } catch (final Exception exception) {
-            throw new EntryException(exception);
-        }
     }
 }
