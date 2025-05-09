@@ -22,17 +22,33 @@
  * SOFTWARE.
  */
 
-package io.github.artemget;
+package io.github.artemget.fake;
+
+import io.github.artemget.Entry;
 
 /**
- * Fake entry. Always throws.
+ * Fake inmemory entry.
  *
  * @param <T> Value type
  * @since 0.0.1
  */
-public final class EFakeErr<T> implements Entry<T> {
+public final class EFake<T> implements Entry<T> {
+    /**
+     * Entry value.
+     */
+    private final T val;
+
+    /**
+     * Main Ctor.
+     *
+     * @param val Entry value
+     */
+    public EFake(final T val) {
+        this.val = val;
+    }
+
     @Override
-    public T value() throws EntryException {
-        throw new EntryException("Fake error");
+    public T value() {
+        return this.val;
     }
 }
