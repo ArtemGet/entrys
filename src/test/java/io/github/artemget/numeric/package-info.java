@@ -23,6 +23,6 @@
  */
 
 /**
- * Entry root directory.
+ * Test cases for numeric entries.
  */
-package io.github.artemget;
+package io.github.artemget.numeric;

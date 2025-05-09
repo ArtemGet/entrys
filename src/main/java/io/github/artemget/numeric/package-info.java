@@ -22,32 +22,7 @@
  * SOFTWARE.
  */
 
-package io.github.artemget;
-
 /**
- * Integer entry.
- * @since 0.2.0
+ * Numeric entries directory.
  */
-public final class EInt implements Entry<Integer> {
-    /**
-     * Origin entry.
-     */
-    private final Entry<String> origin;
-
-    /**
-     * Main Ctor.
-     * @param origin Property
-     */
-    public EInt(final Entry<String> origin) {
-        this.origin = new ESafe<>(origin);
-    }
-
-    @Override
-    public Integer value() throws EntryException {
-        try {
-            return Integer.valueOf(this.origin.value());
-        } catch (final NumberFormatException exception) {
-            throw new EntryException("Wrong entry type for int entry", exception);
-        }
-    }
-}
+package io.github.artemget.numeric;
