@@ -22,25 +22,24 @@
  * SOFTWARE.
  */
 
-package io.github.artemget;
+package io.github.artemget.system;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
+import io.github.artemget.ESafe;
 
 /**
- * Test cases for {@link io.github.artemget.EProp}.
- * @since 0.2.0
+ * Property entry.
+ * @since 0.0.1
  */
-class EPropTest {
+public final class EProp extends ESafe<String> {
 
-    @Test
-    public void returnsPropertyWhenExists() throws EntryException {
-        System.setProperty("property", "value");
-        MatcherAssert.assertThat(
-            "Property entry did not return property",
-            new EProp("property").value(),
-            Matchers.equalTo("value")
+    /**
+     * Main ctor.
+     * @param name Of property entry
+     */
+    public EProp(final String name) {
+        super(
+            () -> System.getProperty(name),
+            () -> String.format("Empty property entry for name %s", name)
         );
     }
 }

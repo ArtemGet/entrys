@@ -22,22 +22,7 @@
  * SOFTWARE.
  */
 
-package io.github.artemget;
-
 /**
- * Property entry.
- * @since 0.0.1
+ * System entries directory.
  */
-public final class EProp extends ESafe<String> {
-
-    /**
-     * Main ctor.
-     * @param name Of property entry
-     */
-    public EProp(final String name) {
-        super(
-            () -> System.getProperty(name),
-            () -> String.format("Empty property entry for name %s", name)
-        );
-    }
-}
+package io.github.artemget.system;
