@@ -26,7 +26,7 @@ package io.github.artemget;
 
 /**
  * Integer entry.
- * @since 0.0.1
+ * @since 0.2.0
  */
 public final class EInt implements Entry<Integer> {
     /**
