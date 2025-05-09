@@ -26,27 +26,18 @@ package io.github.artemget;
 
 /**
  * Property entry.
- *
  * @since 0.0.1
  */
-public final class EProp implements Entry<String> {
+public final class EProp extends ESafe<String> {
+
     /**
-     * Name of property.
+     * Main ctor.
+     * @param name Of property entry
      */
-    private final String name;
-
     public EProp(final String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String value() throws EntryException {
-        final String value = System.getProperty(this.name);
-        if (value == null) {
-            throw new EntryException(
-                String.format("Empty entry for name %s", this.name)
-            );
-        }
-        return value;
+        super(
+            () -> System.getProperty(name),
+            () -> String.format("Empty property entry for name %s", name)
+        );
     }
 }
