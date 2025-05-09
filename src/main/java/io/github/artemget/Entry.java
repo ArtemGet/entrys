@@ -24,18 +24,15 @@
 
 package io.github.artemget;
 
+import org.cactoos.Scalar;
+
 /**
  * Application's entry.
  *
  * @param <T> Value type
  * @since 0.0.1
  */
-public interface Entry<T> {
-    /**
-     * Entry value.
-     *
-     * @return Value
-     * @throws EntryException At entry not present
-     */
+public interface Entry<T> extends Scalar<T> {
+    @Override
     T value() throws EntryException;
 }
