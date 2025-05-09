@@ -41,9 +41,7 @@ final class ESafeTest {
         Assertions.assertThrows(
             EntryException.class,
             () -> new ESafe<>(
-                () -> {
-                    throw new EntryException("error");
-                }
+                new EFakeErr<>()
             ).value(),
             "Safe entry did not rethrow scalar exception"
         );
@@ -62,7 +60,7 @@ final class ESafeTest {
     void returnsScalarValue() throws EntryException {
         MatcherAssert.assertThat(
             "Safe entry did not return suggested value",
-            new ESafe<>(() -> "value").value(),
+            new ESafe<>(new EFake<>("value")).value(),
             Matchers.equalTo("value")
         );
     }
