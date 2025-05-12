@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for {@link io.github.artemget.entrys.system.EProp}.
- * @since 0.2.0
+ * @since 0.3.0
  */
 final class EPropTest {
 
