@@ -39,6 +39,12 @@
       <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>uk.org.webcompere</groupId>
+      <artifactId>system-stubs-core</artifactId>
+      <version>2.1.8</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -57,7 +63,6 @@
         <version>3.2.5</version>
         <configuration>
           <forkCount>0</forkCount>
-          <argLine>${argLine}</argLine>
         </configuration>
       </plugin>
       <plugin>
