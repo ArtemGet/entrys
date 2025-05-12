@@ -31,7 +31,7 @@ import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
 
 /**
  * Test cases for {@link io.github.artemget.entrys.system.EEnv}.
- * @since 0.2.0
+ * @since 0.3.0
  */
 final class EEnvTest {
     @Test
