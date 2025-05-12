@@ -28,7 +28,7 @@ import io.github.artemget.entrys.ESafe;
 
 /**
  * Environment entry.
- * @since 0.2.0
+ * @since 0.3.0
  */
 public final class EEnv extends ESafe<String> {
 
