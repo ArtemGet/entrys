@@ -18,6 +18,11 @@
   </properties>
   <dependencies>
     <dependency>
+      <groupId>com.amihaiemil.web</groupId>
+      <artifactId>eo-yaml</artifactId>
+      <version>8.0.6</version>
+    </dependency>
+    <dependency>
       <groupId>org.glassfish</groupId>
       <artifactId>jakarta.json</artifactId>
       <version>1.1.6</version>
