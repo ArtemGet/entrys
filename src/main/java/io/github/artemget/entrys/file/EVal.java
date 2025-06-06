@@ -27,12 +27,15 @@ package io.github.artemget.entrys.file;
 import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlMapping;
 import io.github.artemget.entrys.ESafe;
+import io.github.artemget.entrys.EntryException;
+import io.github.artemget.entrys.operation.ESplit;
 import java.io.IOException;
+import java.util.List;
 
 public final class EVal extends ESafe<String> {
 
     public EVal(final String key) {
-        this(key, "/src/main/resources/application.yaml");
+        this(key, "src/main/resources/application.yaml");
     }
 
     public EVal(final String key, final String path) {
@@ -42,10 +45,25 @@ public final class EVal extends ESafe<String> {
                 try {
                     root = Yaml.createYamlInput(new EFile(path).value())
                         .readYamlMapping();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                } catch (IOException exception) {
+                    throw new EntryException(
+                        String.format(
+                            "Failed to read yaml mapping for key: '%s', for path: '%s'",
+                            key,
+                            path
+                        ),
+                        exception
+                    );
                 }
-
+                String res = null;
+                List<String> elements = new ESplit(() -> key, ".").value();
+                for (int i = 0; i < elements.size(); i++) {
+                    if (i == elements.size() - 1) {
+                        res = root.string(elements.get(i));
+                    }
+                    root = root.yamlMapping(elements.get(i));
+                }
+                return res;
             },
             () -> String.format("Attribute for key '%s' is null for path '%s'", key, path)
         );
