@@ -27,14 +27,16 @@ package io.github.artemget.entrys.operation;
 import io.github.artemget.entrys.ESafe;
 import io.github.artemget.entrys.Entry;
 import io.github.artemget.entrys.EntryException;
+import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 /**
  * Split entry.
  * @since 0.0.2
  */
-public final class ESplit implements Entry<Set<String>> {
+public final class ESplit implements Entry<List<String>> {
     /**
      * Origin string entry.
      */
@@ -64,10 +66,10 @@ public final class ESplit implements Entry<Set<String>> {
     }
 
     @Override
-    public Set<String> value() throws EntryException {
+    public List<String> value() throws EntryException {
         final String value = this.origin.value();
         try {
-            return Set.of(value.split(this.delimiter));
+            return List.of(value.split(Pattern.quote(this.delimiter)));
         } catch (final PatternSyntaxException exception) {
             throw new EntryException(
                 String.format(
