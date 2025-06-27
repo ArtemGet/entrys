@@ -141,7 +141,21 @@ final class EValTest {
                     "ages: [ 123, 321 ]"
                 )
             ).value(),
-            "Inner node not parsed"
+            "Array node not parsed"
+        );
+    }
+
+    @Test
+    void parsesEmptyArray() throws EntryException {
+        Assertions.assertEquals(
+            "",
+            new EVal(
+                "ages",
+                new EFake<>(
+                    "ages: []"
+                )
+            ).value(),
+            "Empty array not parsed"
         );
     }
 
@@ -159,7 +173,21 @@ final class EValTest {
                         """
                 )
             ).value(),
-            "Inner node not parsed"
+            "Array not parsed"
+        );
+    }
+
+    @Test
+    void parsesStringWrap() throws EntryException {
+        Assertions.assertEquals(
+            " First line.\n Second line.\n",
+            new EVal(
+                "description",
+                new EFake<>(
+                    "description: >\n First line.\n Second line."
+                )
+            ).value(),
+            "String wrap not parsed"
         );
     }
 }
