@@ -33,6 +33,7 @@ import io.github.artemget.entrys.EntryException;
 import io.github.artemget.entrys.operation.ESplit;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class EVal extends ESafe<String> {
 
@@ -60,8 +61,11 @@ public final class EVal extends ESafe<String> {
                     if (i == elements.size() - 1) {
                         final YamlNode value = root.value(elements.get(i));
                         switch (value.type()) {
-                            case SCALAR ->  res = value.asScalar().value();
-                            case SEQUENCE -> res = value.asSequence().toString();
+                            case SCALAR -> res = value.asScalar().value();
+                            case SEQUENCE -> res = value.asSequence()
+                                .children().stream()
+                                .map(node -> node.asScalar().value())
+                                .collect(Collectors.joining(";"));
                         }
                     }
                     root = root.yamlMapping(elements.get(i));

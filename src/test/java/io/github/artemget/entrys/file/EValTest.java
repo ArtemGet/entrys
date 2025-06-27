@@ -134,7 +134,7 @@ final class EValTest {
     @Test
     void parsesArray() throws EntryException {
         Assertions.assertEquals(
-            "[123, 321]",
+            "123;321",
             new EVal(
                 "ages",
                 new EFake<>(
@@ -146,18 +146,9 @@ final class EValTest {
     }
 
     @Test
-    void parsesArraya() throws EntryException {
-        System.out.println(new EVal(
-            "ages",
-            new EFake<>(
-                """
-                    ages:
-                      - 123
-                      - 321
-                    """
-            )
-        ).value());
+    void parsesAnotherArray() throws EntryException {
         Assertions.assertEquals(
+            "123;321",
             new EVal(
                 "ages",
                 new EFake<>(
@@ -168,7 +159,6 @@ final class EValTest {
                         """
                 )
             ).value(),
-            "123",
             "Inner node not parsed"
         );
     }
