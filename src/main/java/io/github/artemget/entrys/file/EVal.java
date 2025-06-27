@@ -60,7 +60,7 @@ public final class EVal extends ESafe<String> {
                     if (i == elements.size() - 1) {
                         final YamlNode value = root.value(elements.get(i));
                         switch (value.type()) {
-                            case SCALAR ->  res = value.toString();
+                            case SCALAR ->  res = value.asScalar().value();
                             case SEQUENCE -> res = value.asSequence().toString();
                         }
                     }
