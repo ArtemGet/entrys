@@ -49,8 +49,8 @@ final class EValTest {
     @Test
     void parsesString() throws EntryException {
         Assertions.assertEquals(
-            new EVal("age", new EFake<>("age: \"123\"")).value(),
             "123",
+            new EVal("age", new EFake<>("age: \"123\"")).value(),
             "String not parsed"
         );
     }
@@ -58,10 +58,10 @@ final class EValTest {
     @Test
     void parsesInteger() throws EntryException {
         Assertions.assertEquals(
+            Integer.MAX_VALUE,
             Integer.parseInt(
                 new EVal("age", new EFake<>(String.format("age: %s", Integer.MAX_VALUE))).value()
             ),
-            Integer.MAX_VALUE,
             "Integer not parsed"
         );
     }
@@ -69,10 +69,10 @@ final class EValTest {
     @Test
     void parsesLong() throws EntryException {
         Assertions.assertEquals(
+            Long.MAX_VALUE,
             Long.parseLong(
                 new EVal("age", new EFake<>(String.format("age: %s", Long.MAX_VALUE))).value()
             ),
-            Long.MAX_VALUE,
             "Long not parsed"
         );
     }
@@ -80,10 +80,10 @@ final class EValTest {
     @Test
     void parsesFloat() throws EntryException {
         Assertions.assertEquals(
+            Float.MAX_VALUE,
             Float.parseFloat(
                 new EVal("age", new EFake<>(String.format("age: %s", Float.MAX_VALUE))).value()
             ),
-            Float.MAX_VALUE,
             "Float not parsed"
         );
     }
@@ -117,6 +117,7 @@ final class EValTest {
     @Test
     void parsesInnerNode() throws EntryException {
         Assertions.assertEquals(
+            "123",
             new EVal(
                 "person.age",
                 new EFake<>(
@@ -126,7 +127,6 @@ final class EValTest {
                         """
                 )
             ).value(),
-            "123",
             "Inner node not parsed"
         );
     }
