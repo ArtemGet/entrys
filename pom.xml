@@ -21,6 +21,12 @@
       <groupId>com.amihaiemil.web</groupId>
       <artifactId>eo-yaml</artifactId>
       <version>8.0.6</version>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.json</groupId>
+          <artifactId>javax.json-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.glassfish</groupId>
