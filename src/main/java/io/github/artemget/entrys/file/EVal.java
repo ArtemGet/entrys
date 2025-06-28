@@ -30,7 +30,11 @@ import com.amihaiemil.eoyaml.YamlNode;
 import io.github.artemget.entrys.ESafe;
 import io.github.artemget.entrys.Entry;
 import io.github.artemget.entrys.EntryException;
+import io.github.artemget.entrys.operation.EContains;
+import io.github.artemget.entrys.operation.EFork;
 import io.github.artemget.entrys.operation.ESplit;
+import io.github.artemget.entrys.operation.EUnwrap;
+import io.github.artemget.entrys.system.EEnv;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,12 +60,12 @@ public final class EVal extends ESafe<String> {
                     throw new EntryException(String.format("Failed to read yaml mapping for key: '%s'", key), exception);
                 }
                 String res = null;
-                List<String> elements = new ESplit(() -> key, ".").value();
+                final List<String> elements = new ESplit(() -> key, ".").value();
                 for (int i = 0; i < elements.size(); i++) {
                     if (i == elements.size() - 1) {
                         final YamlNode value = root.value(elements.get(i));
                         switch (value.type()) {
-                            case SCALAR -> res = value.asScalar().value();
+                            case SCALAR -> res = EVal.ejected(value);
                             case SEQUENCE -> res = value.asSequence()
                                 .children().stream()
                                 .map(node -> node.asScalar().value())
@@ -74,5 +78,27 @@ public final class EVal extends ESafe<String> {
             },
             () -> String.format("Attribute for key '%s' is null", key)
         );
+    }
+
+    private static String ejected(final YamlNode node) throws EntryException {
+        final String scalar = node.asScalar().value();
+        return new EFork<>(
+            () -> scalar.startsWith("${") && scalar.endsWith("}"),
+            new EFork<>(
+                () -> new ESplit(() -> scalar, ":").value().size() == 2,
+                new EFork<>(
+                    new EContains(new EEnv(new EUnwrap(scalar, "${", "}"))),
+                    new EEnv(() -> EVal.selected(scalar, 1)),
+                    () -> EVal.selected(scalar, 2)
+                ),
+                new EEnv(new EUnwrap(scalar, "${", "}"))
+            ),
+            () -> scalar
+        ).value();
+    }
+
+    private static String selected(final String scalar, final int pos) throws EntryException {
+        return new ESplit(new EUnwrap(scalar, "${", "}"), ":")
+            .value().get(pos);
     }
 }

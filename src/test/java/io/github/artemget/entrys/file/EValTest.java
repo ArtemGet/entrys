@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for {@link io.github.artemget.entrys.json.EJsonArr}.
- * @since 0.0.1
+ * @since 0.4.0
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class EValTest {
