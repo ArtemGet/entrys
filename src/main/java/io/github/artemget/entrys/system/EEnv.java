@@ -25,6 +25,7 @@
 package io.github.artemget.entrys.system;
 
 import io.github.artemget.entrys.ESafe;
+import io.github.artemget.entrys.Entry;
 
 /**
  * Environment entry.
@@ -33,12 +34,20 @@ import io.github.artemget.entrys.ESafe;
 public final class EEnv extends ESafe<String> {
 
     /**
+     * Entry ctor.
+     * @param name Entry
+     */
+    public EEnv(final String name) {
+        this(() -> name);
+    }
+
+    /**
      * Main ctor.
      * @param name Of environment entry
      */
-    public EEnv(final String name) {
+    public EEnv(final Entry<String> name) {
         super(
-            () -> System.getenv(name),
+            () -> System.getenv(name.value()),
             () -> String.format("Empty environment entry for name %s", name)
         );
     }
