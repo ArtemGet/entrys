@@ -33,7 +33,7 @@ import java.util.regex.PatternSyntaxException;
 
 /**
  * Split entry.
- * @since 0.0.2
+ * @since 0.4.0
  */
 public final class ESplit implements Entry<List<String>> {
     /**
