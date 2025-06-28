@@ -32,7 +32,8 @@ import org.junit.jupiter.api.Test;
  * Test cases for {@link EUnwrap}.
  * @since 0.4.0
  */
-class EUnwrapTest {
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+final class EUnwrapTest {
 
     @Test
     void unwraps() throws EntryException {
@@ -47,7 +48,7 @@ class EUnwrapTest {
     void unwrapsNotDefault() throws EntryException {
         Assertions.assertEquals(
             "123",
-            new EUnwrap("${123}", "${","}").value(),
+            new EUnwrap("${123}", "${", "}").value(),
             "Not unwrap value with custom wraps"
         );
     }
@@ -56,7 +57,7 @@ class EUnwrapTest {
     void unwrapsInside() throws EntryException {
         Assertions.assertEquals(
             "123",
-            new EUnwrap("blah-blah${123}blah-blah", "${","}").value(),
+            new EUnwrap("blah-blah${123}blah-blah", "${", "}").value(),
             "Not unwrap value with custom wraps inside bigger string"
         );
     }
@@ -65,7 +66,7 @@ class EUnwrapTest {
     void unwrapsFirst() throws EntryException {
         Assertions.assertEquals(
             "123",
-            new EUnwrap("${123}${321}", "${","}").value(),
+            new EUnwrap("${123}${321}", "${", "}").value(),
             "Not unwrap first value with custom wraps inside bigger string"
         );
     }

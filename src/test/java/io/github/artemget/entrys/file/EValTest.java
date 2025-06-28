@@ -35,7 +35,7 @@ import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
  * Test cases for {@link io.github.artemget.entrys.json.EJsonArr}.
  * @since 0.4.0
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 final class EValTest {
 
     @Test
@@ -121,12 +121,7 @@ final class EValTest {
             "123",
             new EVal(
                 "person.age",
-                new EFake<>(
-                    """
-                        person:
-                         age: "123"
-                        """
-                )
+                new EFake<>("person:\n  age: \"123\"")
             ).value(),
             "Inner node not parsed"
         );
@@ -136,12 +131,7 @@ final class EValTest {
     void parsesArray() throws EntryException {
         Assertions.assertEquals(
             "123;321",
-            new EVal(
-                "ages",
-                new EFake<>(
-                    "ages: [ 123, 321 ]"
-                )
-            ).value(),
+            new EVal("ages", new EFake<>("ages: [ 123, 321 ]")).value(),
             "Array node not parsed"
         );
     }
@@ -166,13 +156,7 @@ final class EValTest {
             "123;321",
             new EVal(
                 "ages",
-                new EFake<>(
-                    """
-                        ages:
-                          - 123
-                          - 321
-                        """
-                )
+                new EFake<>("ages:\n  - 123\n  - 321")
             ).value(),
             "Array not parsed"
         );
@@ -184,9 +168,7 @@ final class EValTest {
             " First line.\n Second line.\n",
             new EVal(
                 "description",
-                new EFake<>(
-                    "description: >\n First line.\n Second line."
-                )
+                new EFake<>("description: >\n First line.\n Second line.")
             ).value(),
             "String wrap not parsed"
         );

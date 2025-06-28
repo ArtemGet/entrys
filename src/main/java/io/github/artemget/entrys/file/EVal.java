@@ -24,6 +24,7 @@
 
 package io.github.artemget.entrys.file;
 
+import com.amihaiemil.eoyaml.Node;
 import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlMapping;
 import com.amihaiemil.eoyaml.YamlNode;
@@ -39,16 +40,41 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Configuration properties entry.
+ * By default gets entries from "src/main/resources/application.yaml"
+ * Supports all yaml types, default values and envs passed via ${ENV}.
+ *
+ * @since 0.4.0
+ */
 public final class EVal extends ESafe<String> {
 
+    /**
+     * From yaml file at default dir.
+     *
+     * @param key Of entry
+     */
     public EVal(final String key) {
         this(key, "src/main/resources/application.yaml");
     }
 
+    /**
+     * From yaml file.
+     *
+     * @param key Of entry
+     * @param path To yaml file
+     */
     public EVal(final String key, final String path) {
         this(key, new EFile(path));
     }
 
+    /**
+     * Main ctor.
+     *
+     * @param key Of Entry
+     * @param content Yaml content
+     */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
     public EVal(final String key, final Entry<String> content) {
         super(
             () -> {
@@ -56,23 +82,27 @@ public final class EVal extends ESafe<String> {
                 try {
                     root = Yaml.createYamlInput(content.value())
                         .readYamlMapping();
-                } catch (IOException | EntryException exception) {
-                    throw new EntryException(String.format("Failed to read yaml mapping for key: '%s'", key), exception);
+                } catch (final IOException | EntryException exception) {
+                    throw new EntryException(
+                        String.format("Failed to read yaml mapping for key: '%s'", key),
+                        exception
+                    );
                 }
                 String res = null;
                 final List<String> elements = new ESplit(() -> key, ".").value();
-                for (int i = 0; i < elements.size(); i++) {
-                    if (i == elements.size() - 1) {
-                        final YamlNode value = root.value(elements.get(i));
-                        switch (value.type()) {
-                            case SCALAR -> res = EVal.ejected(value);
-                            case SEQUENCE -> res = value.asSequence()
+                for (int element = 0; element < elements.size(); ++element) {
+                    if (element == elements.size() - 1) {
+                        final YamlNode value = root.value(elements.get(element));
+                        if (Node.SCALAR == value.type()) {
+                            res = EVal.ejected(value);
+                        } else if (Node.SEQUENCE == value.type()) {
+                            res = value.asSequence()
                                 .children().stream()
                                 .map(node -> node.asScalar().value())
                                 .collect(Collectors.joining(";"));
                         }
                     }
-                    root = root.yamlMapping(elements.get(i));
+                    root = root.yamlMapping(elements.get(element));
                 }
                 return res;
             },

@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
  * Test cases for {@link EFork}.
  * @since 0.4.0
  */
-class EForkTest {
+final class EForkTest {
 
     @Test
     void returnsOrigin() throws EntryException {

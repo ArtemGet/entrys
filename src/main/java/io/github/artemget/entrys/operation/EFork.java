@@ -31,6 +31,7 @@ import io.github.artemget.entrys.EntryException;
  * Fork between origin and spare entries.
  *
  * @param <T> Type
+ * @since 0.4.0
  */
 public final class EFork<T> implements Entry<T> {
     /**
@@ -44,7 +45,7 @@ public final class EFork<T> implements Entry<T> {
     private final Entry<T> origin;
 
     /**
-     * Spare entry
+     * Spare entry.
      */
     private final Entry<T> spare;
 
@@ -63,10 +64,12 @@ public final class EFork<T> implements Entry<T> {
 
     @Override
     public T value() throws EntryException {
+        final T value;
         if (this.condition.value()) {
-            return this.origin.value();
+            value = this.origin.value();
         } else {
-            return this.spare.value();
+            value = this.spare.value();
         }
+        return value;
     }
 }

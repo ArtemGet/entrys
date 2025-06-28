@@ -28,7 +28,6 @@ import io.github.artemget.entrys.ESafe;
 import io.github.artemget.entrys.Entry;
 import io.github.artemget.entrys.EntryException;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 

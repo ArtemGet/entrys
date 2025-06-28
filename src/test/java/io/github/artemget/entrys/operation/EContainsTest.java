@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
  * Test cases for {@link EContains}.
  * @since 0.4.0
  */
-class EContainsTest {
+final class EContainsTest {
 
     @Test
     void contains() throws EntryException {

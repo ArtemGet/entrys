@@ -32,6 +32,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/**
+ * File's content entry.
+ *
+ * @since 0.4.0
+ */
 public class EFile extends ESafe<String> {
     public EFile(final String path) {
         this(path, StandardCharsets.UTF_8);
