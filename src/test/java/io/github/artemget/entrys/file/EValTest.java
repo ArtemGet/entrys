@@ -29,6 +29,7 @@ import io.github.artemget.entrys.fake.EFake;
 import io.github.artemget.entrys.fake.EFakeErr;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
 
 /**
  * Test cases for {@link io.github.artemget.entrys.json.EJsonArr}.
@@ -188,6 +189,42 @@ final class EValTest {
                 )
             ).value(),
             "String wrap not parsed"
+        );
+    }
+
+    @Test
+    void parsesDefaultValueAtMissingEnv() throws EntryException {
+        Assertions.assertEquals(
+            "123",
+            new EVal(
+                "age",
+                new EFake<>(
+                    "age: ${my_env:123}"
+                )
+            ).value(),
+            "Not parsed default value"
+        );
+    }
+
+    @Test
+    void parsesEnv() throws Exception {
+        Assertions.assertEquals(
+            "321",
+            new EnvironmentVariables("my_env", "321").execute(
+                () -> new EVal("age", new EFake<>("age: ${my_env}")).value()
+            ),
+            "Not parsed default value"
+        );
+    }
+
+    @Test
+    void parsesEnvOverwritesDefaultValue() throws Exception {
+        Assertions.assertEquals(
+            "111",
+            new EnvironmentVariables("my_env", "111").execute(
+                () -> new EVal("age", new EFake<>("age: ${my_env:123}")).value()
+            ),
+            "Not parsed default value"
         );
     }
 }
