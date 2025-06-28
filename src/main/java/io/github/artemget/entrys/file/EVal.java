@@ -87,9 +87,9 @@ public final class EVal extends ESafe<String> {
             new EFork<>(
                 () -> new ESplit(() -> scalar, ":").value().size() == 2,
                 new EFork<>(
-                    new EContains(new EEnv(new EUnwrap(scalar, "${", "}"))),
-                    new EEnv(() -> EVal.selected(scalar, 1)),
-                    () -> EVal.selected(scalar, 2)
+                    new EContains(new EEnv(() -> EVal.selected(scalar, 0).trim())),
+                    new EEnv(() -> EVal.selected(scalar, 0).trim()),
+                    () -> EVal.selected(scalar, 1).trim()
                 ),
                 new EEnv(new EUnwrap(scalar, "${", "}"))
             ),
