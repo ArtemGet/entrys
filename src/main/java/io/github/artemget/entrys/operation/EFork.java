@@ -22,33 +22,54 @@
  * SOFTWARE.
  */
 
-package io.github.artemget.entrys.system;
+package io.github.artemget.entrys.operation;
 
-import io.github.artemget.entrys.ESafe;
 import io.github.artemget.entrys.Entry;
+import io.github.artemget.entrys.EntryException;
 
 /**
- * Environment entry.
- * @since 0.3.0
+ * Fork between origin and spare entries.
+ *
+ * @param <T> Type
+ * @since 0.4.0
  */
-public final class EEnv extends ESafe<String> {
+public final class EFork<T> implements Entry<T> {
+    /**
+     * Condition.
+     */
+    private final Entry<Boolean> condition;
 
     /**
-     * Entry ctor.
-     * @param name Entry
+     * Origin entry.
      */
-    public EEnv(final String name) {
-        this(() -> name);
-    }
+    private final Entry<T> origin;
+
+    /**
+     * Spare entry.
+     */
+    private final Entry<T> spare;
 
     /**
      * Main ctor.
-     * @param name Of environment entry
+     *
+     * @param condition To check
+     * @param origin Entry
+     * @param spare Entry
      */
-    public EEnv(final Entry<String> name) {
-        super(
-            () -> System.getenv(name.value()),
-            () -> String.format("Empty environment entry for name %s", name)
-        );
+    public EFork(final Entry<Boolean> condition, final Entry<T> origin, final Entry<T> spare) {
+        this.condition = condition;
+        this.origin = origin;
+        this.spare = spare;
+    }
+
+    @Override
+    public T value() throws EntryException {
+        final T value;
+        if (this.condition.value()) {
+            value = this.origin.value();
+        } else {
+            value = this.spare.value();
+        }
+        return value;
     }
 }

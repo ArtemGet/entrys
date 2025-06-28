@@ -22,33 +22,7 @@
  * SOFTWARE.
  */
 
-package io.github.artemget.entrys.system;
-
-import io.github.artemget.entrys.ESafe;
-import io.github.artemget.entrys.Entry;
-
 /**
- * Environment entry.
- * @since 0.3.0
+ * Tests for entries that read stuff from files.
  */
-public final class EEnv extends ESafe<String> {
-
-    /**
-     * Entry ctor.
-     * @param name Entry
-     */
-    public EEnv(final String name) {
-        this(() -> name);
-    }
-
-    /**
-     * Main ctor.
-     * @param name Of environment entry
-     */
-    public EEnv(final Entry<String> name) {
-        super(
-            () -> System.getenv(name.value()),
-            () -> String.format("Empty environment entry for name %s", name)
-        );
-    }
-}
+package io.github.artemget.entrys.file;

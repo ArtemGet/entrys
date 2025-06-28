@@ -22,33 +22,42 @@
  * SOFTWARE.
  */
 
-package io.github.artemget.entrys.system;
+package io.github.artemget.entrys.operation;
 
-import io.github.artemget.entrys.ESafe;
-import io.github.artemget.entrys.Entry;
+import io.github.artemget.entrys.EntryException;
+import io.github.artemget.entrys.fake.EFake;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
- * Environment entry.
- * @since 0.3.0
+ * Test cases for {@link EFork}.
+ * @since 0.4.0
  */
-public final class EEnv extends ESafe<String> {
+final class EForkTest {
 
-    /**
-     * Entry ctor.
-     * @param name Entry
-     */
-    public EEnv(final String name) {
-        this(() -> name);
+    @Test
+    void returnsOrigin() throws EntryException {
+        Assertions.assertEquals(
+            "123",
+            new EFork<>(
+                () -> true,
+                new EFake<>("123"),
+                new EFake<>("321")
+            ).value(),
+            "Returned spare"
+        );
     }
 
-    /**
-     * Main ctor.
-     * @param name Of environment entry
-     */
-    public EEnv(final Entry<String> name) {
-        super(
-            () -> System.getenv(name.value()),
-            () -> String.format("Empty environment entry for name %s", name)
+    @Test
+    void returnsSpare() throws EntryException {
+        Assertions.assertEquals(
+            "321",
+            new EFork<>(
+                () -> false,
+                new EFake<>("123"),
+                new EFake<>("321")
+            ).value(),
+            "Returned origin"
         );
     }
 }

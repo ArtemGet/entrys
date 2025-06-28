@@ -22,33 +22,42 @@
  * SOFTWARE.
  */
 
-package io.github.artemget.entrys.system;
+package io.github.artemget.entrys.file;
 
 import io.github.artemget.entrys.ESafe;
-import io.github.artemget.entrys.Entry;
+import io.github.artemget.entrys.EntryException;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
- * Environment entry.
- * @since 0.3.0
+ * File's content entry.
+ *
+ * @since 0.4.0
  */
-public final class EEnv extends ESafe<String> {
-
-    /**
-     * Entry ctor.
-     * @param name Entry
-     */
-    public EEnv(final String name) {
-        this(() -> name);
+public class EFile extends ESafe<String> {
+    public EFile(final String path) {
+        this(path, StandardCharsets.UTF_8);
     }
 
-    /**
-     * Main ctor.
-     * @param name Of environment entry
-     */
-    public EEnv(final Entry<String> name) {
+    public EFile(final String path, final Charset charset) {
         super(
-            () -> System.getenv(name.value()),
-            () -> String.format("Empty environment entry for name %s", name)
+            () -> {
+                try {
+                    return Files.readString(Path.of(path), charset);
+                } catch (final IOException | SecurityException exception) {
+                    throw new EntryException(
+                        String.format(
+                            "Failed to load contents of file for path: '%s'",
+                            path
+                        ),
+                        exception
+                    );
+                }
+            },
+            () -> String.format("Empty file for path: '%s'", path)
         );
     }
 }

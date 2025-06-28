@@ -22,33 +22,40 @@
  * SOFTWARE.
  */
 
-package io.github.artemget.entrys.system;
+package io.github.artemget.entrys.operation;
 
 import io.github.artemget.entrys.ESafe;
 import io.github.artemget.entrys.Entry;
+import io.github.artemget.entrys.EntryException;
 
 /**
- * Environment entry.
- * @since 0.3.0
+ * Returns either entry is empty or not.
+ *
+ * @since 0.4.0
  */
-public final class EEnv extends ESafe<String> {
-
+public final class EContains implements Entry<Boolean> {
     /**
-     * Entry ctor.
-     * @param name Entry
+     * Origin entry.
      */
-    public EEnv(final String name) {
-        this(() -> name);
-    }
+    private final Entry<?> entry;
 
     /**
      * Main ctor.
-     * @param name Of environment entry
+     *
+     * @param entry To check
      */
-    public EEnv(final Entry<String> name) {
-        super(
-            () -> System.getenv(name.value()),
-            () -> String.format("Empty environment entry for name %s", name)
-        );
+    public EContains(final Entry<?> entry) {
+        this.entry = new ESafe<>(entry);
+    }
+
+    @Override
+    public Boolean value() throws EntryException {
+        boolean contains = true;
+        try {
+            this.entry.value();
+        } catch (final EntryException exception) {
+            contains = false;
+        }
+        return contains;
     }
 }
