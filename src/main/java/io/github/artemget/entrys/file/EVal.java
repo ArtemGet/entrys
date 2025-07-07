@@ -115,11 +115,11 @@ public final class EVal extends ESafe<String> {
         return new EFork<>(
             () -> scalar.startsWith("${") && scalar.endsWith("}"),
             new EFork<>(
-                () -> new ESplit(() -> scalar, ":").value().size() == 2,
+                () -> new ESplit(() -> scalar, ":").value().size() >= 2,
                 new EFork<>(
-                    new EContains(new EEnv(() -> EVal.selected(scalar, 0).trim())),
-                    new EEnv(() -> EVal.selected(scalar, 0).trim()),
-                    () -> EVal.selected(scalar, 1).trim()
+                    new EContains(new EEnv(() -> EVal.selectedEnv(scalar).trim())),
+                    new EEnv(() -> EVal.selectedEnv(scalar).trim()),
+                    () -> EVal.joined(scalar)
                 ),
                 new EEnv(new EUnwrap(scalar, "${", "}"))
             ),
@@ -127,8 +127,22 @@ public final class EVal extends ESafe<String> {
         ).value();
     }
 
-    private static String selected(final String scalar, final int pos) throws EntryException {
+    private static String selectedEnv(final String scalar) throws EntryException {
         return new ESplit(new EUnwrap(scalar, "${", "}"), ":")
-            .value().get(pos);
+            .value().get(0);
+    }
+
+    private static String joined(final String scalar) throws EntryException {
+        final List<String> split = new ESplit(
+            new EUnwrap(scalar, "${", "}"), ":"
+        ).value();
+        final StringBuilder value = new StringBuilder();
+        for (int index = 1; index < split.size(); ++index) {
+            value.append(split.get(index));
+            if (index < split.size() - 1) {
+                value.append(':');
+            }
+        }
+        return value.toString();
     }
 }
