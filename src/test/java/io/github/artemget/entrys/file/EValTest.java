@@ -189,6 +189,20 @@ final class EValTest {
     }
 
     @Test
+    void parsesDefaultValueWithDelimiterAtMissingEnv() throws EntryException {
+        Assertions.assertEquals(
+            "https://192.168.0.1:8080",
+            new EVal(
+                "age",
+                new EFake<>(
+                    "age: ${my_env:https://192.168.0.1:8080}"
+                )
+            ).value(),
+            "Not parsed default value with delimiter"
+        );
+    }
+
+    @Test
     void parsesEnv() throws Exception {
         Assertions.assertEquals(
             "321",
