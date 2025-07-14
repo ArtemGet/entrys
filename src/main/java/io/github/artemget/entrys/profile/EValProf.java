@@ -1,117 +1,92 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2024-2025. Artem Getmanskii
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package io.github.artemget.entrys.profile;
 
-import com.amihaiemil.eoyaml.Yaml;
-import com.amihaiemil.eoyaml.YamlMapping;
-import com.amihaiemil.eoyaml.YamlNode;
 import io.github.artemget.entrys.ESafe;
 import io.github.artemget.entrys.Entry;
 import io.github.artemget.entrys.EntryException;
 import io.github.artemget.entrys.file.EFile;
 import io.github.artemget.entrys.file.EVal;
-import io.github.artemget.entrys.operation.EContains;
-import io.github.artemget.entrys.operation.EFork;
-import io.github.artemget.entrys.operation.ESplit;
-import io.github.artemget.entrys.operation.EUnwrap;
-import io.github.artemget.entrys.system.EEnv;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
+/**
+ * Configuration properties entry.
+ * By default gets entries from "src/main/resources/application.yaml"
+ * Supports all yaml types, default values and envs passed via ${ENV}.
+ *
+ * @since 0.4.0
+ */
 public final class EValProf extends ESafe<String> {
 
+    /**
+     * From yaml file at default dir.
+     *
+     * @param key Of Entry
+     */
     public EValProf(final String key) {
         this(key, "src/main/resources/application.yaml");
     }
 
+    /**
+     * From yaml file.
+     *
+     * @param key Of Entry
+     * @param path To Yaml File
+     */
     public EValProf(final String key, final String path) {
         this(key, new EFile(path), path);
     }
 
+    /**
+     * Main ctor.
+     *
+     * @param key Of Entry
+     * @param content Yaml Content
+     * @param path Yaml Path
+     */
     public EValProf(final String key, final Entry<String> content, final String path) {
         super(
-                () -> {
-                    YamlMapping root;
-                    try {
-                        root = Yaml.createYamlInput(content.value())
-                                .readYamlMapping();
-                    } catch (IOException | EntryException exception) {
-                        throw new EntryException(
-                                String.format("Failed to read yaml mapping for key: '%s'", key),
-                                exception
-                        );
-                    }
-                    String res = null;
-                    YamlNode profileNode = getProfileNode(root);
-                    if (profileNode != null) {
-                        String profile = EValProf.ejected(profileNode);
-                        res = new EVal(key, parsePath(path, profile)).value();
+            () -> {
+                String result;
+                final String profile;
+                try {
+                    profile = new EVal("entrys.profile", path).value();
+                    if (profile.isBlank()) {
+                        throw new EntryException("Attribute for key 'profile' is empty");
                     } else {
-                        res = new EVal(key, content).value();
+                        result = new EVal(key, parsePath(path, profile)).value();
                     }
-                    return res;
-                },
-                () -> String.format("Attribute for key '%s' is null", key)
+                } catch (final EntryException exception) {
+                    result = new EVal(key, content).value();
+                }
+                return result;
+            },
+            () -> String.format("Attribute for key '%s' is null", key)
         );
     }
 
-    private static YamlNode getProfileNode(final YamlMapping root) {
-        final List<String> path = Arrays.asList("entrys","profile");
-        YamlNode currentNode = root;
-        for(String part: path) {
-            if (currentNode instanceof YamlMapping) {
-                currentNode = ((YamlMapping) currentNode).value(part);
-            } else {
-                return null;
-            }
-        }
-        return currentNode;
-    }
-
-    private static String ejected(final YamlNode profileNode) throws EntryException {
-        final String scalar = profileNode.asScalar().value();
-
-        return new EFork<>(
-                new EContains(scalar::isBlank),
-                () -> {
-                    throw new EntryException("Attribute for key 'profile' is empty");
-                },
-                () -> new EFork<>(
-                        () -> scalar.startsWith("${") && scalar.endsWith("}"),
-                        new EFork<>(
-                                () -> new ESplit(() -> scalar, ":").value().size() >= 2,
-                                new EFork<>(
-                                        new EContains(new EEnv(() -> EValProf.selectedEnv(scalar).trim())),
-                                        new EEnv(() -> EValProf.selectedEnv(scalar).trim()),
-                                        () -> EValProf.joined(scalar)
-                                ),
-                                new EEnv(new EUnwrap(scalar, "${", "}"))
-                        ),
-                        () -> scalar
-                ).value()
-        ).value();
-    }
-
     private static String parsePath(final String path, final String profile) {
-        return path.replace("application", "application-" + profile);
-    }
-
-    private static String selectedEnv(final String scalar) throws EntryException {
-        return new ESplit(new EUnwrap(scalar, "${", "}"), ":")
-                .value().get(0);
-    }
-
-    private static String joined(final String scalar) throws EntryException {
-        final List<String> split = new ESplit(
-                new EUnwrap(scalar, "${", "}"), ":"
-        ).value();
-        final StringBuilder value = new StringBuilder();
-        for (int index = 1; index < split.size(); ++index) {
-            value.append(split.get(index));
-            if (index < split.size() - 1) {
-                value.append(':');
-            }
-        }
-        return value.toString();
+        return path.replace("application", String.format("application%s", profile));
     }
 }
