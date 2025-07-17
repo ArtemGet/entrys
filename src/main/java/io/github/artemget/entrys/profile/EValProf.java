@@ -26,9 +26,9 @@ package io.github.artemget.entrys.profile;
 
 import io.github.artemget.entrys.ESafe;
 import io.github.artemget.entrys.Entry;
-import io.github.artemget.entrys.EntryException;
 import io.github.artemget.entrys.file.EFile;
-import io.github.artemget.entrys.file.EVal;
+import io.github.artemget.entrys.operation.EContains;
+import io.github.artemget.entrys.yaml.EYaml;
 
 /**
  * Configuration properties entry.
@@ -63,22 +63,17 @@ public final class EValProf extends ESafe<String> {
      *
      * @param key Of Entry
      * @param content Yaml Content
-     * @param path Yaml Path
+     * @param path String Path
      */
     public EValProf(final String key, final Entry<String> content, final String path) {
         super(
             () -> {
-                String result;
-                final String profile;
-                try {
-                    profile = new EVal("entrys.profile", path).value();
-                    if (profile.isBlank()) {
-                        throw new EntryException("Attribute for key 'profile' is empty");
-                    } else {
-                        result = new EVal(key, parsePath(path, profile)).value();
-                    }
-                } catch (final EntryException exception) {
-                    result = new EVal(key, content).value();
+                final String result;
+                if (new EContains(new EYaml("entrys.profile", path)).value()) {
+                    final String profile = new EYaml("entrys.profile", path).value();
+                    result = new EYaml(key, parsePath(path, profile)).value();
+                } else {
+                    result = new EYaml(key, content).value();
                 }
                 return result;
             },
@@ -87,6 +82,6 @@ public final class EValProf extends ESafe<String> {
     }
 
     private static String parsePath(final String path, final String profile) {
-        return path.replace("application", String.format("application%s", profile));
+        return path.replace("application", String.format("application-%s", profile));
     }
 }
