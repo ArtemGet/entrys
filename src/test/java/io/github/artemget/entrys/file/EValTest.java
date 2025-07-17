@@ -33,6 +33,7 @@ import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
 
 /**
  * Test cases for {@link io.github.artemget.entrys.json.EJsonArr}.
+ *
  * @since 0.4.0
  */
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
@@ -165,7 +166,7 @@ final class EValTest {
     @Test
     void parsesStringWrap() throws EntryException {
         Assertions.assertEquals(
-            " First line.\n Second line.\n",
+                " First line.\n Second line.\n",
             new EVal(
                 "description",
                 new EFake<>("description: >\n First line.\n Second line.")
