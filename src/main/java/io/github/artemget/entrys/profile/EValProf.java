@@ -22,10 +22,12 @@
  * SOFTWARE.
  */
 
-package io.github.artemget.entrys.file;
+package io.github.artemget.entrys.profile;
 
 import io.github.artemget.entrys.ESafe;
 import io.github.artemget.entrys.Entry;
+import io.github.artemget.entrys.file.EFile;
+import io.github.artemget.entrys.operation.EContains;
 import io.github.artemget.entrys.yaml.EYaml;
 
 /**
@@ -35,38 +37,51 @@ import io.github.artemget.entrys.yaml.EYaml;
  *
  * @since 0.4.0
  */
-public final class EVal extends ESafe<String> {
+public final class EValProf extends ESafe<String> {
 
     /**
      * From yaml file at default dir.
      *
-     * @param key Of entry
+     * @param key Of Entry
      */
-    public EVal(final String key) {
+    public EValProf(final String key) {
         this(key, "src/main/resources/application.yaml");
     }
 
     /**
      * From yaml file.
      *
-     * @param key Of entry
-     * @param path To yaml file
+     * @param key Of Entry
+     * @param path To Yaml File
      */
-    public EVal(final String key, final String path) {
-        this(key, new EFile(path));
+    public EValProf(final String key, final String path) {
+        this(key, new EFile(path), path);
     }
 
     /**
      * Main ctor.
      *
      * @param key Of Entry
-     * @param content Yaml content
+     * @param content Yaml Content
+     * @param path String Path
      */
-    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
-    public EVal(final String key, final Entry<String> content) {
+    public EValProf(final String key, final Entry<String> content, final String path) {
         super(
-            () -> new EYaml(key, content).value(),
+            () -> {
+                final String result;
+                if (new EContains(new EYaml("entrys.profile", path)).value()) {
+                    final String profile = new EYaml("entrys.profile", path).value();
+                    result = new EYaml(key, parsePath(path, profile)).value();
+                } else {
+                    result = new EYaml(key, content).value();
+                }
+                return result;
+            },
             () -> String.format("Attribute for key '%s' is null", key)
         );
+    }
+
+    private static String parsePath(final String path, final String profile) {
+        return path.replace("application", String.format("application-%s", profile));
     }
 }
