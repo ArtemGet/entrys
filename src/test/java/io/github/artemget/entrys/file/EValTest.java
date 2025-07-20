@@ -25,6 +25,7 @@
 package io.github.artemget.entrys.file;
 
 import io.github.artemget.entrys.EntryException;
+import io.github.artemget.entrys.EntryExceptionUnchecked;
 import io.github.artemget.entrys.fake.EFake;
 import io.github.artemget.entrys.fake.EFakeErr;
 import org.junit.jupiter.api.Assertions;
@@ -101,7 +102,7 @@ final class EValTest {
     @Test
     void throwsAtNullValue() {
         Assertions.assertThrows(
-            EntryException.class,
+            EntryExceptionUnchecked.class,
             () -> new EVal("age", new EFake<>("age: null")).value(),
             "Didnt throw at null value"
         );
@@ -139,9 +140,9 @@ final class EValTest {
 
     @Test
     void parsesEmptyArray() throws EntryException {
-        Assertions.assertEquals(
-            "",
-            new EVal(
+        Assertions.assertThrows(
+            EntryExceptionUnchecked.class,
+            () -> new EVal(
                 "ages",
                 new EFake<>(
                     "ages: []"
@@ -166,7 +167,7 @@ final class EValTest {
     @Test
     void parsesStringWrap() throws EntryException {
         Assertions.assertEquals(
-                " First line.\n Second line.\n",
+            " First line.\n Second line.\n",
             new EVal(
                 "description",
                 new EFake<>("description: >\n First line.\n Second line.")
