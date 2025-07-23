@@ -24,6 +24,7 @@
 
 package io.github.artemget.entrys.func;
 
+import io.github.artemget.entrys.EntryException;
 import org.cactoos.Func;
 
 /**
@@ -35,5 +36,5 @@ import org.cactoos.Func;
  */
 public interface EFunc<X, Y> extends Func<X, Y> {
     @Override
-    Y apply(X input) throws Exception;
+    Y apply(X input) throws EntryException;
 }

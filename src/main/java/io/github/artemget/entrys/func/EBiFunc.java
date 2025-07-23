@@ -24,6 +24,7 @@
 
 package io.github.artemget.entrys.func;
 
+import io.github.artemget.entrys.EntryException;
 import org.cactoos.BiFunc;
 
 /**
@@ -36,5 +37,5 @@ import org.cactoos.BiFunc;
  */
 public interface EBiFunc<X, Y, Z> extends BiFunc<X, Y, Z> {
     @Override
-    Z apply(X first, Y second) throws Exception;
+    Z apply(X first, Y second) throws EntryException;
 }
