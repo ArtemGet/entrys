@@ -22,8 +22,30 @@ This library is distributed via [jitpack.io](https://jitpack.io/#ArtemGet/entrys
 
 1) Properties passed via -D
 2) Environment variables
-3) Json strings
+3) Json strings 
+
+Note that using json entries requires additional dependencies:
+
+```xml
+
+<dependency>
+  <groupId>org.glassfish</groupId>
+  <artifactId>jakarta.json</artifactId>
+  <version>1.1.6</version>
+</dependency>
+```
+
 4) Yaml files
+
+Note that using yaml entries requires additional dependencies:
+
+```xml
+<dependency>
+   <groupId>com.amihaiemil.web</groupId>
+   <artifactId>eo-yaml</artifactId>
+   <version>8.0.6</version>
+</dependency>
+```
 
 # Examples
 
